@@ -16,4 +16,3 @@ with open("Car details v3.csv", "r") as f:
             "price": line[2]
         }
         es.index(index="cars", document=carList)
-        print(es.index(index="cars", document=carList))
