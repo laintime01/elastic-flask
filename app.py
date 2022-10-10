@@ -15,7 +15,14 @@ def search_autocomplete():
     query = request.args['q']
     tokens = query.split(" ")
     print(tokens)
-    return ""
+    query_body = {
+        "query": {
+            "match": {
+                "name": "bmw"
+            }
+        }
+    }
+    return es.search(index="cars", body=query_body)
 
 if __name__ == '__main__':
     app.run(debug=True)
