@@ -17,7 +17,8 @@
             <b-input-group-prepend is-text>
               <b-icon icon="search"></b-icon>
             </b-input-group-prepend>
-            <b-input placeholder="请输入查询关键字"> </b-input>
+            <b-form-input placeholder="请输入查询关键字" v-model="search_data">
+            </b-form-input>
           </b-input-group>
           <b-button
             type="button"
@@ -61,19 +62,20 @@
 
 <script>
 export default {
-  name: "HelloWorld",
+  name: "SearchPage",
   props: {
     msg: String,
   },
   data() {
     return {
       message: "",
+      search_data: "",
       showMessage: false,
     };
   },
   methods: {
     onSearch() {
-      console.log("search");
+      console.log(this.search_data);
     },
   },
 };

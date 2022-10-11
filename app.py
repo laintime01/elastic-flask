@@ -5,6 +5,7 @@ app = Flask(__name__)
 es = Elasticsearch(hosts=["http://127.0.0.1:9200"])
 print(f"Connected to ElasticSearch cluster {es.info()['cluster_name']}")
 
+
 @app.route('/')
 def hello_world():  # put application's code here
     return 'Hello World!'
@@ -12,9 +13,9 @@ def hello_world():  # put application's code here
 
 @app.route('/get_es')
 def search_autocomplete():
-    query = request.args['q']
-    tokens = query.split(" ")
-    print(tokens)
+    obj_response = {'message': 'success'}
+    post_data = request.get_json()
+    print(post_data)
     query_body = {
         "query": {
             "match": {
@@ -22,7 +23,9 @@ def search_autocomplete():
             }
         }
     }
-    return es.search(index="cars", body=query_body)
+    obj_response['body'] = es.search(index="cars", body=query_body)
+    return obj_response
+
 
 if __name__ == '__main__':
     app.run(debug=True)
