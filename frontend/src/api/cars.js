@@ -1,9 +1,9 @@
-import requests from "@/request";
+import request from "@/request/request";
 
 export function searchCars(query) {
-  return requests({
+  return request({
     url: "/get_es",
-    method: "get",
-    params: query,
+    method: "post",
+    data: query,
   });
 }

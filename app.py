@@ -1,9 +1,11 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from elasticsearch import Elasticsearch
+from flask_cors import CORS
 
 app = Flask(__name__)
 es = Elasticsearch(hosts=["http://127.0.0.1:9200"])
 print(f"Connected to ElasticSearch cluster {es.info()['cluster_name']}")
+CORS(app, resource={r"/*": {'origins': "*"}})
 
 
 @app.route('/')
@@ -11,20 +13,23 @@ def hello_world():  # put application's code here
     return 'Hello World!'
 
 
-@app.route('/get_es')
+@app.route('/get_es', methods=['POST'])
 def search_autocomplete():
-    obj_response = {'message': 'success'}
+    print("search!")
     post_data = request.get_json()
     print(post_data)
+    val = post_data.get('input')
+    obj_response = {'message': 'success'}
+    print(val)
     query_body = {
         "query": {
             "match": {
-                "name": "bmw"
+                "name": val
             }
         }
     }
-    obj_response['body'] = es.search(index="cars", body=query_body)
-    return obj_response
+    obj_response['infos'] = es.search(index="cars", body=query_body)
+    return jsonify(obj_response)
 
 
 if __name__ == '__main__':

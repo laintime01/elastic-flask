@@ -43,16 +43,28 @@
           <table class="table table-hover">
             <thead>
               <tr>
+                <th scope="col">序号</th>
                 <th scope="col">ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Year</th>
-                <th scope="col">Price</th>
-                <th scope="col">Km</th>
-                <th scope="col">Fuel</th>
-                <th scope="col">Seller</th>
-                <th scope="col">Owner</th>
+                <th scope="col">索引</th>
+                <th scope="col">匹配分</th>
+                <th scope="col">型号</th>
+                <th scope="col">发动机</th>
+                <th scope="col">年份</th>
+                <th scope="col">价格</th>
               </tr>
             </thead>
+            <tbody>
+              <tr v-for="(cars, index) in search_results" :key="index">
+                <td>{{ index }}</td>
+                <td>{{ cars._id }}</td>
+                <td>{{ cars._index }}</td>
+                <td>{{ cars._score }}</td>
+                <td>{{ cars._source.name }}</td>
+                <td>{{ cars._source.engine }}</td>
+                <td>{{ cars._source.year }}</td>
+                <td>{{ cars._source.price }}</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -61,6 +73,8 @@
 </template>
 
 <script>
+import { searchCars } from "@/api/cars";
+
 export default {
   name: "SearchPage",
   props: {
@@ -70,12 +84,29 @@ export default {
     return {
       message: "",
       search_data: "",
+      search_results: "",
       showMessage: false,
     };
   },
   methods: {
-    onSearch() {
-      console.log(this.search_data);
+    onSearch(e) {
+      e.preventDefault();
+      const data = this.search_data;
+      console.log(data);
+      const payload = {
+        input: data,
+      };
+      this.getCars(payload);
+    },
+    getCars(query) {
+      searchCars(query)
+        .then((res) => {
+          console.log(res);
+          this.search_results = res.data.infos.hits.hits;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
