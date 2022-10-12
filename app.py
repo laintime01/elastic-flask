@@ -15,7 +15,6 @@ def hello_world():  # put application's code here
 
 @app.route('/get_es', methods=['POST'])
 def search_autocomplete():
-    print("search!")
     post_data = request.get_json()
     print(post_data)
     val = post_data.get('input')
@@ -31,6 +30,25 @@ def search_autocomplete():
     obj_response['infos'] = es.search(index="cars", body=query_body)
     return jsonify(obj_response)
 
+
+@app.route('/analyze', methods=['GET'])
+def analyze_data():
+    print("analyze")
+    query_body = {
+        "query": {
+            "match": {
+                "name": "bmw"
+            }
+        },
+        "aggs": {
+            "all_years": {
+                "terms": {
+                    "field": "name"
+                }
+            }
+        }
+    }
+    return es.search(index="cars", body=query_body)
 
 if __name__ == '__main__':
     app.run(debug=True)
