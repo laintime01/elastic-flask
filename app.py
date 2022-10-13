@@ -19,7 +19,17 @@ def search_autocomplete():
     print(post_data)
     val = post_data.get('input')
     obj_response = {'message': 'success'}
-    print(val)
+    constant_query = {
+        "query": {
+            "constant_score": {
+                "filter": {
+                    "term": {
+                        "name": val
+                    }
+                }
+            }
+        }
+    }
     query_body = {
         "query": {
             "match": {
@@ -27,7 +37,7 @@ def search_autocomplete():
             }
         }
     }
-    obj_response['infos'] = es.search(index="cars", body=query_body)
+    obj_response['infos'] = es.search(index="cars", body=constant_query)
     return jsonify(obj_response)
 
 
