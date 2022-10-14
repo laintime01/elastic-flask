@@ -64,14 +64,40 @@ def rangeSearch(key, value):
 
 
 # multi_match 查询
-def multi_match_search(query, type, fields, tie_breaker, minimum_match):
+def multi_match_search(query, type_arg, fields, tie_breaker, minimum_match):
     multi_query = {
         "multi_match": {
             "query": query,
-            "type": type,
+            "type": type_arg,
             "fields": fields,
             "tie_breaker": tie_breaker,
             "minimum_should_match": minimum_match
         }
     }
     return multi_query
+
+
+# 跨字段实体搜索
+def cross_fields_search(query, fields):
+    cross_fields = {
+        "query":{
+            "multi_match": {
+                "query": query,
+                "type": "most_fields",
+                "fields": fields
+            }
+        }
+    }
+    return cross_fields
+
+
+# 短语匹配
+def phrase_search(key, value):
+    query = {
+        "query": {
+            "match_phrase": {
+                key: value
+            }
+        }
+    }
+    return query
