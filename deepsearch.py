@@ -61,3 +61,17 @@ def rangeSearch(key, value):
         }
     }
     return query
+
+
+# multi_match 查询
+def multi_match_search(query, type, fields, tie_breaker, minimum_match):
+    multi_query = {
+        "multi_match": {
+            "query": query,
+            "type": type,
+            "fields": fields,
+            "tie_breaker": tie_breaker,
+            "minimum_should_match": minimum_match
+        }
+    }
+    return multi_query

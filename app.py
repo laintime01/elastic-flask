@@ -37,7 +37,7 @@ def search_autocomplete():
             }
         }
     }
-    obj_response['infos'] = es.search(index="cars", body=constant_query)
+    obj_response['infos'] = es.search(index="cars", body=query_body)
     return jsonify(obj_response)
 
 
