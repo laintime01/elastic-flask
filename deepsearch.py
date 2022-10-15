@@ -80,7 +80,7 @@ def multi_match_search(query, type_arg, fields, tie_breaker, minimum_match):
 # 跨字段实体搜索
 def cross_fields_search(query, fields):
     cross_fields = {
-        "query":{
+        "query": {
             "multi_match": {
                 "query": query,
                 "type": "most_fields",
@@ -97,6 +97,36 @@ def phrase_search(key, value):
         "query": {
             "match_phrase": {
                 key: value
+            }
+        }
+    }
+    return query
+
+
+# 创建shingle词汇单元过滤器
+def create_shingle():
+    query = {
+        "settings": {
+            "number_of_shards": 1,
+            "analysis": {
+                "filter": {
+                    "my_shingle_filter": {
+                        "type": "shingle",
+                        "min_shingle_size": 2,
+                        "output_unigrams": False
+
+                    }
+                },
+                "analyzer": {
+                    "my_shingle_analyzer": {
+                        "type": "custom",
+                        "tokenizer": "standard",
+                        "filter": [
+                            "lowercase",
+                            "my_shingle_filter"
+                        ]
+                    }
+                }
             }
         }
     }
