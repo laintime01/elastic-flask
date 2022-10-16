@@ -131,3 +131,14 @@ def create_shingle():
         }
     }
     return query
+
+
+# 查询时输入即搜索
+def instant_search(key, value, max):
+    query = {
+        "match_phrase_prefix": {
+            key: value,
+            "max_expansions": max
+        }
+    }
+    return query
