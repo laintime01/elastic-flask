@@ -13,12 +13,16 @@
           <b-alert variant="success" v-if="showMessage" show
             >{{ message }}
           </b-alert>
-          <b-input-group style="float: left; width: 30%">
+          <b-input-group style="float: left; width: 50%">
             <b-input-group-prepend is-text>
               <b-icon icon="search"></b-icon>
             </b-input-group-prepend>
             <b-form-input placeholder="请输入查询关键字" v-model="search_data">
             </b-form-input>
+            <b-form-select
+              v-model="selected"
+              :options="options"
+            ></b-form-select>
           </b-input-group>
           <b-button
             type="button"
@@ -86,6 +90,13 @@ export default {
       search_data: "",
       search_results: "",
       showMessage: false,
+      selected: null,
+      options: [
+        { value: null, text: "请选择搜索模式" },
+        { value: "a", text: "固定分数查询" },
+        { value: "b", text: "布尔查询" },
+        { value: "c", text: "更多查询" },
+      ],
     };
   },
   methods: {
