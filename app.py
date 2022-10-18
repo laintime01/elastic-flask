@@ -1,16 +1,15 @@
 from flask import Flask, request, jsonify
-from elasticsearch import Elasticsearch
 from flask_cors import CORS
+from elasticsearch_class import ES
 
 app = Flask(__name__)
-es = Elasticsearch(hosts=["http://127.0.0.1:9200"])
-print(f"Connected to ElasticSearch cluster {es.info()['cluster_name']}")
+car_es = ES(index_name="cars")
 CORS(app, resource={r"/*": {'origins': "*"}})
 
 
 @app.route('/')
 def hello_world():  # put application's code here
-    return 'Hello World!'
+    return 'ElasticSearch-Flask!'
 
 
 @app.route('/get_es', methods=['POST'])
@@ -19,17 +18,6 @@ def search_autocomplete():
     print(post_data)
     val = post_data.get('input')
     obj_response = {'message': 'success'}
-    constant_query = {
-        "query": {
-            "constant_score": {
-                "filter": {
-                    "term": {
-                        "name": val
-                    }
-                }
-            }
-        }
-    }
     query_body = {
         "query": {
             "match": {
@@ -37,8 +25,22 @@ def search_autocomplete():
             }
         }
     }
-    obj_response['infos'] = es.search(index="cars", body=query_body)
+    obj_response['infos'] = car_es.search(query=query_body)
     return jsonify(obj_response)
+
+
+@app.route('/books', methods=['POST'])
+def get_books():
+    book_es = ES(index_name="prog_books")
+    query_book = {
+        "query": {
+            "match": {
+                "Book_title": "python"
+            }
+        }
+    }
+    result = book_es.search(query=query_book)
+    return result
 
 
 @app.route('/analyze', methods=['GET'])
@@ -58,7 +60,7 @@ def analyze_data():
             }
         }
     }
-    return es.search(index="cars", body=query_body)
+    return car_es.search(query=query_body)
 
 
 if __name__ == '__main__':
