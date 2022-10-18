@@ -31,11 +31,14 @@ def search_autocomplete():
 
 @app.route('/books', methods=['POST'])
 def get_books():
+    post_data = request.get_json()
+    print(post_data)
+    val = post_data.get('input')
     book_es = ES(index_name="prog_books")
     query_book = {
         "query": {
             "match": {
-                "Book_title": "python"
+                "Book_title": val
             }
         }
     }
