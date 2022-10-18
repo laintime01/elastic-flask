@@ -17,7 +17,12 @@
             <b-input-group-prepend is-text>
               <b-icon icon="search"></b-icon>
             </b-input-group-prepend>
-            <b-form-input placeholder="请输入查询关键字" v-model="search_data">
+            <b-form-input
+              placeholder="请输入查询关键字"
+              v-model="search_data"
+              class="search-box"
+              @keyup="onSearch"
+            >
             </b-form-input>
             <b-form-select
               v-model="selected"
@@ -78,6 +83,7 @@
 
 <script>
 import { searchCars } from "@/api/cars";
+import $ from "jquery";
 
 export default {
   name: "SearchPage",
@@ -103,7 +109,6 @@ export default {
     onSearch(e) {
       e.preventDefault();
       const data = this.search_data;
-      console.log(data);
       const payload = {
         input: data,
       };
@@ -118,6 +123,26 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    AutoComplete() {
+      // eslint-disable-next-line no-unused-vars
+      let debounce;
+      $(".search-box").on("keydown", function () {
+        const data = $(".search-box").val();
+        console.log(data);
+        const payload = {
+          input: data,
+        };
+        console.log(payload);
+        searchCars(payload)
+          .then((res) => {
+            console.log(res);
+            this.search_results = res.data.infos.hits.hits;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
     },
   },
 };
